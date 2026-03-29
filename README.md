@@ -1,159 +1,159 @@
 # WorkPulse
 
-WorkPulse es una aplicación desktop local-first para equipos de desarrollo, construida con Python, Flet y SQLite.
+WorkPulse is a local-first desktop application for development teams, built with Python, Flet, and SQLite.
 
-Su objetivo no es competir con un gestor genérico de proyectos ni con un IDE. Está pensada como una herramienta técnica de coordinación y ejecución que une, en una sola interfaz compacta:
+Its goal is not to compete with a generic project manager or an IDE. It is designed as a technical coordination and execution tool that brings together, in a single compact interface:
 
-- tablero kanban orientado a tareas técnicas
-- foco de trabajo sobre una tarea activa
-- contexto técnico por tarea: repo, rama y path local por usuario
-- cierre de tareas con commit opcional o requerido
-- pomodoro y sesiones de trabajo
-- fichaje local
-- sincronización opcional usando un repositorio Git privado como backend
+- a kanban board oriented around technical tasks
+- work focus on one active task
+- technical context per task: repo, branch, and local path per user
+- task completion with optional or required commit
+- pomodoro and work sessions
+- local time tracking
+- optional synchronization using a private Git repository as the backend
 
-Todo el estado principal vive en local. La sincronización es opcional. Sin sync, WorkPulse sigue funcionando al 100%.
+All primary state lives locally. Synchronization is optional. Without sync, WorkPulse still works at 100%.
 
-## Qué resuelve
+## What It Solves
 
-WorkPulse está diseñado para el caso en el que un desarrollador necesita responder rápido a preguntas como:
+WorkPulse is designed for the case where a developer needs to quickly answer questions like:
 
-- en qué tarea estoy trabajando ahora mismo
-- qué rama y qué repo están asociados a esa tarea
-- si esa tarea requiere commit para cerrarse
-- dónde está el path local correcto para ese repo en esta máquina
-- qué ha estado haciendo el resto del equipo según el último estado conocido
-- qué sesiones de foco, pomodoro o fichaje se han registrado hoy
-- qué cambios siguen pendientes de sincronizar
+- what task am I working on right now
+- which branch and repo are associated with that task
+- whether that task requires a commit before closing
+- where the correct local path for that repo is on this machine
+- what the rest of the team has been doing based on the last known state
+- which focus sessions, pomodoros, or time tracking entries were recorded today
+- which changes are still pending synchronization
 
-## Principios del producto
+## Product Principles
 
-- `Local-first`: el estado principal siempre vive en SQLite local.
-- `Offline-friendly`: la aplicación es usable sin red y sin repo de sync.
-- `Git-native`: la sync usa Git CLI del sistema, no un backend externo.
-- `Developer-centric`: tareas, ramas, repos, commits y paths locales son entidades de primera clase.
-- `Compact desktop UI`: ventana flotante, pineable, minimizable y responsive.
+- `Local-first`: the primary state always lives in local SQLite.
+- `Offline-friendly`: the application is usable without network access and without a sync repo.
+- `Git-native`: sync uses the system Git CLI, not an external backend.
+- `Developer-centric`: tasks, branches, repos, commits, and local paths are first-class entities.
+- `Compact desktop UI`: floating, pinnable, minimizable, and responsive window.
 
-## Funcionalidades
+## Features
 
 ### Board
 
-- columnas `Backlog`, `Doing`, `Review`, `Done`
-- tarjetas de tarea con assignee, repo, branch, prioridad y commit policy
-- filtros por:
-  - asignadas al usuario actual
+- `Backlog`, `Doing`, `Review`, `Done` columns
+- task cards with assignee, repo, branch, priority, and commit policy
+- filters by:
+  - assigned to the current user
   - repo
   - status
   - commit policy
-  - tarea activa
-- edición y movimiento de tareas
-- selección de tarea activa
-- warnings cuando falta el path local del repo para el usuario actual
+  - active task
+- task editing and movement
+- active task selection
+- warnings when the repo local path is missing for the current user
 
 ### Focus
 
-- tarea activa grande y destacada
-- descripción resumida
-- repo, branch y local path
-- warning si falta el path local
-- botones para abrir path, iniciar pomodoro, completar tarea o limpiar tarea activa
+- large, highlighted active task
+- summarized description
+- repo, branch, and local path
+- warning when the local path is missing
+- buttons to open path, start pomodoro, complete task, or clear active task
 
 ### Time
 
-- pomodoro con start, pause, resume y reset
-- work sessions manuales
+- pomodoro with start, pause, resume, and reset
+- manual work sessions
 - clock in / clock out
-- historial corto de actividad
-- métricas derivadas del estado real, no de números fake
+- short activity history
+- metrics derived from real state, not fake numbers
 
 ### Team
 
-- miembros del workspace
-- estado `active`, `idle`, `offline`
-- última actividad conocida
-- tarea activa
-- último fichaje
-- última tarea completada con commit registrado
+- workspace members
+- `active`, `idle`, `offline` status
+- last known activity
+- active task
+- last clock entry
+- last completed task with recorded commit
 
 ### Completion Flow
 
-- inspección del repo local antes de cerrar tarea
-- lectura de branch actual
-- listado de ficheros modificados
+- local repo inspection before closing a task
+- current branch reading
+- modified files listing
 - staged / unstaged
-- commit policy `none`, `optional`, `required`
-- soporte para `Close only` y `Close + Commit`
-- bloqueo de cierre cuando la policy requiere commit y el contexto Git no es válido
+- `none`, `optional`, `required` commit policy
+- support for `Close only` and `Close + Commit`
+- closing blocked when the policy requires a commit and the Git context is not valid
 
-### Sync opcional por Git
+### Optional Git-Based Sync
 
-- export de snapshots y eventos a disco
-- pull / push / full sync usando Git CLI
-- repo privado elegido por el usuario o por el equipo
-- sin servidor propio
-- sin SaaS obligatorio
+- export of snapshots and events to disk
+- pull / push / full sync using Git CLI
+- private repo chosen by the user or the team
+- no own server
+- no mandatory SaaS
 
-## Stack técnico
+## Tech Stack
 
 - Python 3.11+
 - Flet desktop
 - SQLite
-- Git CLI del sistema
+- system Git CLI
 - `subprocess`
 - `pathlib`
 
-## Requisitos
+## Requirements
 
-- Python 3.11 o superior
-- `git` disponible en `PATH`
-- macOS o Linux
+- Python 3.11 or higher
+- `git` available in `PATH`
+- macOS or Linux
 
-En Linux, el runtime desktop de Flet puede necesitar `libmpv`.
+On Linux, the Flet desktop runtime may require `libmpv`.
 
-## Instalación
+## Installation
 
-### Instalación recomendada
+### Recommended Installation
 
-Desde la raíz del proyecto:
+From the project root:
 
 ```bash
 ./init.sh
 ```
 
-`init.sh` hace lo siguiente:
+`init.sh` does the following:
 
-1. detecta macOS o Linux
-2. comprueba Python 3.11+
-3. crea `.venv` si no existe
-4. actualiza `pip`
-5. instala dependencias desde `requirements.txt`
-6. crea un launcher ejecutable llamado `workpulse`
-7. instala ese launcher en una ruta de usuario razonable
-8. avisa si esa ruta no está en `PATH`
+1. detects macOS or Linux
+2. checks for Python 3.11+
+3. creates `.venv` if it does not exist
+4. updates `pip`
+5. installs dependencies from `requirements.txt`
+6. creates an executable launcher named `workpulse`
+7. installs that launcher in a reasonable user path
+8. warns if that path is not in `PATH`
 
-Después puedes arrancar WorkPulse con:
+After that, you can start WorkPulse with:
 
 ```bash
 workpulse
 ```
 
-### Ejecución local sin launcher
+### Local Run Without Launcher
 
 ```bash
 ./run.sh
 ```
 
-## Dependencias Linux y Flet desktop
+## Linux Dependencies and Flet Desktop
 
 ### Arch / Manjaro
 
-Instala `mpv`:
+Install `mpv`:
 
 ```bash
 sudo pacman -S mpv
 ```
 
-WorkPulse incluye además un shim local en `run.sh` para compatibilizar el caso en el que Flet busque `libmpv.so.1` y el sistema exponga `libmpv.so.2`.
+WorkPulse also includes a local shim in `run.sh` to handle the case where Flet looks for `libmpv.so.1` and the system exposes `libmpv.so.2`.
 
 ### Ubuntu / Debian
 
@@ -162,7 +162,7 @@ sudo apt update
 sudo apt install libmpv-dev libmpv2 mpv
 ```
 
-Si el runtime sigue quejándose de `libmpv.so.1`, puedes necesitar este fallback:
+If the runtime still complains about `libmpv.so.1`, you may need this fallback:
 
 ```bash
 sudo apt update
@@ -176,191 +176,191 @@ sudo ln -s /usr/lib/x86_64-linux-gnu/libmpv.so /usr/lib/libmpv.so.1
 sudo dnf install mpv-libs mpv
 ```
 
-## Primer arranque
+## First Launch
 
-La primera vez que abras WorkPulse, el orden lógico es este:
+The first time you open WorkPulse, the logical order is:
 
-1. crear un workspace
-2. crear o seleccionar el usuario local actual
-3. registrar repos lógicos
-4. mapear paths locales por usuario y repo
-5. crear tareas
-6. marcar una tarea como activa
-7. usar pomodoro, work session o fichaje según necesites
+1. create a workspace
+2. create or select the current local user
+3. register logical repos
+4. map local paths by user and repo
+5. create tasks
+6. mark a task as active
+7. use pomodoro, work session, or time tracking as needed
 
-## Conceptos principales
+## Core Concepts
 
 ### Workspace
 
-Agrupa el estado operativo de un equipo:
+Groups a team's operational state:
 
-- usuarios
-- repos lógicos
-- tareas
-- eventos
-- configuración de sync
+- users
+- logical repos
+- tasks
+- events
+- sync configuration
 
-### Repo lógico
+### Logical Repo
 
-No es una copia local concreta. Es una entidad funcional que identifica un repositorio dentro del workspace:
+It is not a specific local copy. It is a functional entity that identifies a repository inside the workspace:
 
-- nombre visible
-- remote canónico o identificador
-- branch por defecto
+- display name
+- canonical remote or identifier
+- default branch
 
-### Repo local mapping
+### Local Repo Mapping
 
-Conecta un repo lógico con un path local concreto para un usuario concreto.
+Connects a logical repo with a specific local path for a specific user.
 
-Esto permite que la misma tarea apunte al mismo repo lógico, pero cada miembro del equipo use su propio path local.
+This allows the same task to point to the same logical repo while each team member uses their own local path.
 
-### Tarea activa
+### Active Task
 
-Cada usuario puede tener solo una tarea activa a la vez.
+Each user can only have one active task at a time.
 
-La tarea activa alimenta:
+The active task feeds:
 
-- la vista `Focus`
-- la asociación automática con pomodoro
-- la asociación opcional con work sessions
+- the `Focus` view
+- the automatic association with pomodoro
+- the optional association with work sessions
 
-### Event log
+### Event Log
 
-Cada cambio importante genera un evento en SQLite.
+Every important change generates an event in SQLite.
 
-Ejemplos:
+Examples:
 
-- creación de workspace
-- creación de usuario
-- creación o actualización de repo
-- actualización de mappings
-- creación o cambio de tarea
-- movimiento de tarea
-- tarea activa
+- workspace creation
+- user creation
+- repo creation or update
+- mapping updates
+- task creation or change
+- task movement
+- active task
 - pomodoro
 - clock in / clock out
-- cierre de tarea
+- task completion
 
-Ese event log es la base del contador de cambios pendientes y del modelo de sync.
+That event log is the basis for the pending changes counter and the sync model.
 
-## Flujo de uso recomendado
+## Recommended Usage Flow
 
-### 1. Crear workspace
+### 1. Create Workspace
 
-Abre el diálogo de workspace desde:
+Open the workspace dialog from:
 
 - `Configure now`
 - `Settings`
-- selector superior de workspace
+- the top workspace selector
 
-Introduce:
+Enter:
 
-- nombre del workspace
-- usuario inicial opcional
+- workspace name
+- optional initial user
 
-### 2. Crear usuarios
+### 2. Create Users
 
-Abre `Settings -> Manage users`.
+Open `Settings -> Manage users`.
 
-Puedes:
+You can:
 
-- crear usuarios locales del workspace
-- seleccionar el usuario actual de esta máquina
+- create local workspace users
+- select the current user for this machine
 
-### 3. Registrar repos
+### 3. Register Repos
 
-Abre `Settings -> Manage repos`.
+Open `Settings -> Manage repos`.
 
-Para cada repo lógico:
+For each logical repo:
 
-- define nombre visible
-- define remote canónico
-- define branch por defecto
+- define display name
+- define canonical remote
+- define default branch
 
-Después crea los mappings:
+Then create the mappings:
 
-- selecciona repo
-- selecciona usuario
-- asigna path local
+- select repo
+- select user
+- assign local path
 
-### 4. Crear tareas
+### 4. Create Tasks
 
-En `Board` puedes crear tareas con:
+In `Board` you can create tasks with:
 
-- título
-- descripción
+- title
+- description
 - assignee
 - status
-- prioridad
+- priority
 - tags
 - repo
 - branch
 - commit policy
 
-### 5. Marcar tarea activa
+### 5. Mark Active Task
 
-Puedes hacerlo desde:
+You can do this from:
 
-- menú de acciones de la tarjeta
-- panel de detalle de la tarea
+- the card action menu
+- the task detail panel
 
-Si cambias a otra, la anterior se sustituye.
+If you switch to another one, the previous task is replaced.
 
-### 6. Trabajar en Focus
+### 6. Work in Focus
 
-La vista `Focus` usa la tarea activa actual y muestra:
+The `Focus` view uses the current active task and shows:
 
-- contexto técnico
-- path local
-- botones de acción rápida
-- estado de foco
+- technical context
+- local path
+- quick action buttons
+- focus state
 
-### 7. Registrar tiempo
+### 7. Track Time
 
-En `Time` puedes:
+In `Time` you can:
 
-- lanzar un pomodoro
-- pausarlo o reanudarlo
-- iniciar y cerrar work sessions
-- hacer clock in / clock out
+- start a pomodoro
+- pause or resume it
+- start and close work sessions
+- clock in / clock out
 
-### 8. Cerrar tarea con commit
+### 8. Close Task With Commit
 
-Cuando usas `Mark as Done`, WorkPulse:
+When you use `Mark as Done`, WorkPulse:
 
-1. revisa si la tarea tiene repo
-2. busca el mapping local del usuario actual
-3. comprueba si la ruta existe
-4. comprueba si es un repo Git válido
-5. obtiene branch actual
-6. obtiene status corto
-7. muestra archivos modificados y staged / unstaged
+1. checks whether the task has a repo
+2. looks up the current user's local mapping
+3. verifies that the path exists
+4. verifies that it is a valid Git repo
+5. gets the current branch
+6. gets short status
+7. shows modified files and staged / unstaged
 
-Acciones posibles:
+Possible actions:
 
 - `Close only`
 - `Close + Commit`
 
-Si la policy es `required`, `Close only` queda bloqueado.
+If the policy is `required`, `Close only` is blocked.
 
-Por defecto, no se permiten commits vacíos.
+By default, empty commits are not allowed.
 
-## Cómo funciona la sync
+## How Sync Works
 
-La sync es opcional y usa un repositorio Git privado como backend.
+Sync is optional and uses a private Git repository as the backend.
 
-### Qué sigue siendo local
+### What Stays Local
 
-Siempre local:
+Always local:
 
-- base de datos SQLite principal
-- settings locales
+- primary SQLite database
+- local settings
 - logs
-- estado de ventana
+- window state
 
-### Qué se exporta al repo de sync
+### What Gets Exported to the Sync Repo
 
-Dentro del repo configurado se escribe:
+Inside the configured repo, the following is written:
 
 ```text
 workpulse-sync/
@@ -371,81 +371,81 @@ workpulse-sync/
   snapshots/latest.json
 ```
 
-### Acciones de sync
+### Sync Actions
 
-Desde `Settings -> Sync`:
+From `Settings -> Sync`:
 
 - `Init sync repo`
 - `Pull`
 - `Push`
 - `Full sync`
 
-### Qué hace cada una
+### What Each One Does
 
 `Init sync repo`
 
-- prepara el repo local de metadata
-- garantiza la branch configurada
-- configura `origin` si hay remote URL
+- prepares the local metadata repo
+- ensures the configured branch
+- configures `origin` if there is a remote URL
 
 `Pull`
 
-- hace `git pull --rebase`
-- importa snapshot remoto al modelo local
+- runs `git pull --rebase`
+- imports remote snapshot into the local model
 
 `Push`
 
-- exporta el estado local
-- hace `git add`
-- crea commit automático si hay cambios
-- hace `git push`
+- exports local state
+- runs `git add`
+- creates an automatic commit if there are changes
+- runs `git push`
 
 `Full sync`
 
-1. valida repo de sync
+1. validates the sync repo
 2. `git pull --rebase`
-3. importa estado remoto
-4. exporta estado local
+3. imports remote state
+4. exports local state
 5. `git add`
-6. commit automático si hay cambios
+6. automatic commit if there are changes
 7. `git push`
-8. marca eventos como sincronizados
+8. marks events as synchronized
 
-### Qué significa el contador Pending
+### What the Pending Counter Means
 
-`Pending` no es un número fake.
+`Pending` is not a fake number.
 
-Cuenta los eventos locales del workspace cuyo `synced_at` sigue a `NULL`.
+It counts the local workspace events whose `synced_at` is still `NULL`.
 
-En otras palabras:
+In other words:
 
-- si haces cambios locales y la sync está activada, `Pending` sube
-- cuando la sync termina bien, esos eventos se marcan como sincronizados
-- si la sync está desactivada, el footer muestra `Sync off`
+- if you make local changes and sync is enabled, `Pending` goes up
+- when sync finishes successfully, those events are marked as synchronized
+- if sync is disabled, the footer shows `Sync off`
 
-## Ventana desktop
+## Desktop Window
 
-WorkPulse usa la API desktop de Flet para:
+WorkPulse uses the Flet desktop API for:
 
-- ancho
-- alto
-- posición
-- minimizado
+- width
+- height
+- position
+- minimized
 - always-on-top
 - resize
 
-La geometría se puede persistir opcionalmente.
+Geometry can optionally be persisted.
 
-Comportamiento por defecto:
+Default behavior:
 
-- Linux: geometría flotante sesgada a la izquierda
-- macOS: geometría flotante sesgada a la derecha
+- Linux: floating geometry biased to the left
+- macOS: floating geometry biased to the right
 
-## Datos y almacenamiento
+## Data and Storage
 
 ### SQLite
 
-La base local guarda:
+The local database stores:
 
 - workspaces
 - users
@@ -458,34 +458,34 @@ La base local guarda:
 - punch records
 - event logs
 
-### Settings locales
+### Local Settings
 
-Se guardan por separado:
+These are stored separately:
 
-- tema
-- preferencias de ventana
-- workspace restaurado
-- usuario actual
-- preferencias de sync
-- configuración de pomodoro
+- theme
+- window preferences
+- restored workspace
+- current user
+- sync preferences
+- pomodoro configuration
 
 ### Logs
 
-Se generan logs locales de:
+Local logs are generated for:
 
-- aplicación
+- application
 - sync
 - Git
 
-En Linux y macOS el directorio de datos se resuelve automáticamente y, si la ruta preferida no es escribible, WorkPulse usa un fallback seguro.
+On Linux and macOS, the data directory is resolved automatically and, if the preferred path is not writable, WorkPulse uses a safe fallback.
 
-También puedes forzar la ruta con:
+You can also force the path with:
 
 ```bash
-WORKPULSE_DATA_DIR=/ruta/personalizada ./run.sh
+WORKPULSE_DATA_DIR=/custom/path ./run.sh
 ```
 
-## Estructura del proyecto
+## Project Structure
 
 ```text
 workpulse/
@@ -549,84 +549,84 @@ workpulse/
     icon.png
 ```
 
-## Solución de problemas
+## Troubleshooting
 
-### `libmpv.so.1` no encontrado en Linux
+### `libmpv.so.1` Not Found on Linux
 
-Instala `mpv` según tu distro. En Arch / Manjaro suele bastar con:
+Install `mpv` according to your distro. On Arch / Manjaro this is usually enough:
 
 ```bash
 sudo pacman -S mpv
 ```
 
-`run.sh` también intenta resolver automáticamente el caso en el que el sistema tenga `libmpv.so.2`.
+`run.sh` also tries to automatically handle the case where the system has `libmpv.so.2`.
 
-### El launcher `workpulse` no se encuentra
+### The `workpulse` Launcher Is Not Found
 
-Comprueba que la ruta esté en `PATH`:
+Check that the path is in `PATH`:
 
 ```bash
 echo $PATH
 ```
 
-El launcher suele instalarse en:
+The launcher is usually installed in:
 
 - `~/.local/bin/workpulse`
-- o `~/bin/workpulse`
+- or `~/bin/workpulse`
 
-### La sync no hace nada
+### Sync Does Nothing
 
-Revisa:
+Check:
 
-- que el workspace tenga `Enable sync` activado
-- que el `sync repo local path` exista
-- que ese path sea un repo Git válido
-- que la branch esté bien configurada
-- que el remote y las credenciales funcionen
+- that the workspace has `Enable sync` enabled
+- that the `sync repo local path` exists
+- that this path is a valid Git repo
+- that the branch is correctly configured
+- that the remote and credentials work
 
-### Un botón aparece deshabilitado
+### A Button Appears Disabled
 
-Eso normalmente significa que el estado actual no permite esa acción.
+That usually means the current state does not allow that action.
 
-Ejemplos:
+Examples:
 
-- `Clock Out` deshabilitado si no estás `clocked in`
-- `Pause` deshabilitado si no hay pomodoro corriendo
-- `Pull/Push/Full sync` deshabilitados si la sync no está configurada
-- `Open path` deshabilitado si no hay local path válido
+- `Clock Out` disabled if you are not `clocked in`
+- `Pause` disabled if no pomodoro is running
+- `Pull/Push/Full sync` disabled if sync is not configured
+- `Open path` disabled if there is no valid local path
 
-## Limitaciones de la versión actual
+## Current Version Limitations
 
-- el movimiento de tareas está resuelto por acciones de menú, no por drag and drop nativo
-- la resolución de conflictos de sync es deliberadamente simple
-- no hay presencia realtime
-- la sync depende de que Git y las credenciales del sistema estén bien configurados
-- el foco es single-user per machine, aunque el workspace soporte varios usuarios
+- task movement is handled through menu actions, not native drag and drop
+- sync conflict resolution is deliberately simple
+- there is no realtime presence
+- sync depends on Git and system credentials being correctly configured
+- the focus model is single-user per machine, although the workspace supports multiple users
 
-## Desarrollo
+## Development
 
-Flujo habitual:
+Typical flow:
 
 ```bash
 ./init.sh
 ./run.sh
 ```
 
-o bien:
+or:
 
 ```bash
 workpulse
 ```
 
-## Resumen
+## Summary
 
-WorkPulse está pensado para ser un punto de control técnico del trabajo diario:
+WorkPulse is meant to be a technical control point for daily work:
 
-- qué tarea estás ejecutando
-- en qué repo y branch estás trabajando
-- si puedes cerrarla sin commit o no
-- qué sesiones de trabajo has registrado
-- qué sabe el equipo del estado actual
-- qué sigue pendiente de sincronizar
+- which task you are executing
+- which repo and branch you are working on
+- whether you can close it without a commit
+- which work sessions you have recorded
+- what the team knows about the current state
+- what is still pending synchronization
 
-Si lo que necesitas es coordinación técnica ligera, local-first y Git-friendly, esa es exactamente la herramienta que intenta ser.
+If what you need is lightweight technical coordination, local-first, and Git-friendly, that is exactly the tool it is trying to be.
