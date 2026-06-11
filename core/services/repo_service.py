@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 
 from core.enums import EntityType, EventType
@@ -7,7 +8,7 @@ from core.models import Repo, RepoLocalMapping
 from core.repositories import RepoLocalMappingRepository, RepoRepository
 from core.services.event_service import EventService
 from core.utils.path_utils import expand_path
-from core.utils.platform_utils import is_macos
+from core.utils.platform_utils import is_linux, is_macos, is_windows
 from core.utils.validators import coerce_optional_str, require_non_empty
 
 
@@ -88,9 +89,14 @@ class RepoService:
         resolved = expand_path(coerce_optional_str(local_path))
         if not resolved or not resolved.exists():
             return False, "Local path is not configured or does not exist."
-        command = ["open", str(resolved)] if is_macos() else ["xdg-open", str(resolved)]
         try:
-            subprocess.Popen(command)
+            if is_windows():
+                os.startfile(str(resolved))  # type: ignore[attr-defined]
+            else:
+                command = ["open", str(resolved)] if is_macos() else ["xdg-open", str(resolved)]
+                if not is_linux() and not is_macos():
+                    return False, "Opening local paths is not supported on this operating system."
+                subprocess.Popen(command)
         except Exception as exc:
             return False, f"Unable to open path: {exc}"
         return True, f"Opened {resolved}"

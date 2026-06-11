@@ -28,6 +28,10 @@ def is_linux() -> bool:
     return platform.system() == "Linux"
 
 
+def is_windows() -> bool:
+    return platform.system() == "Windows"
+
+
 def get_app_data_dir() -> Path:
     override = os.getenv("WORKPULSE_DATA_DIR")
     if override:
@@ -38,6 +42,9 @@ def get_app_data_dir() -> Path:
 
     if is_macos():
         preferred = Path.home() / "Library" / "Application Support" / APP_NAME
+    elif is_windows():
+        base = os.getenv("LOCALAPPDATA") or os.getenv("APPDATA")
+        preferred = Path(base) / APP_NAME if base else Path.home() / "AppData" / "Local" / APP_NAME
     else:
         xdg_data = os.getenv("XDG_DATA_HOME")
         preferred = Path(xdg_data) / APP_NAME.lower() if xdg_data else Path.home() / ".local" / "share" / APP_NAME.lower()
